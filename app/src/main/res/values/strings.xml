@@ -4,4 +4,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_end_ride">EndRideActivity</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_blue">BlueActivity</string>
+    <string name="title_activity_place_picker">PlacePickerActivity</string>
 </resources>

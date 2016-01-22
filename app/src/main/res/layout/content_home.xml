@@ -9,15 +9,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_home" tools:context="com.mycompany.hometomap.HomeActivity">
 
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start New Ride"
         android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="157dp"
-        android:onClick="onStartClick"/>
+        android:onClick="onStartClick"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/button_login"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/biker"
+        android:layout_above="@+id/button"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -25,7 +34,63 @@
         android:text="Test Bluetooth"
         android:id="@+id/button2"
         android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="102dp"
-        android:onClick="onBlueClick"/>
+        android:onClick="onBlueClick"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Place Pick"
+        android:id="@+id/button3"
+        android:layout_below="@+id/button2"
+        android:onClick="onPlaceClick"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search Place"
+        android:id="@+id/button4"
+        android:layout_below="@+id/button3"
+        android:onClick="onSearchClick"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Last"
+        android:id="@+id/button5"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/button4"
+        android:layout_above="@+id/button_login"
+        android:onClick="onLastClick"
+        android:layout_alignEnd="@+id/button3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/latView"
+        android:layout_below="@+id/button5"
+        android:layout_alignStart="@+id/button_login" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/longView"
+        android:layout_below="@+id/latView"
+        android:layout_alignStart="@+id/button_login" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/setRad"
+        android:layout_below="@+id/button4"
+        android:layout_alignEnd="@+id/button3"
+        android:layout_alignStart="@+id/button2"
+        android:inputType="number"/>
+
 </RelativeLayout>

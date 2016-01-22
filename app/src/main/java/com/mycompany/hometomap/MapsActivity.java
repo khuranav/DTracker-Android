@@ -49,18 +49,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle mapData = getIntent().getExtras();
 
         ArrayList<LatLng> syd = mapData.getParcelableArrayList("point");
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(syd.get(syd.size() - 1), 10));
-        mMap.addMarker(new MarkerOptions().position(syd.get(0)).title("Start"));
-        mMap.addMarker(new MarkerOptions().position(syd.get(syd.size() - 1)).title("Finish"));
+        if (syd.size() > 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(syd.get(syd.size() - 1), 14));
+            mMap.addMarker(new MarkerOptions().position(syd.get(0)).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(syd.get(syd.size() - 1)).title("Finish"));
+        }
         Polyline route = mMap.addPolyline(new PolylineOptions());
         route.setPoints(syd);
 
+        final TextView dateText2 = (TextView) findViewById(R.id.showDate2);
         final TextView speedText2 = (TextView) findViewById(R.id.showSpeed2);
         final TextView timeText2 = (TextView) findViewById(R.id.showTime2);
         final TextView distanceText2 = (TextView) findViewById(R.id.showDistance2);
-        timeText2.setText("" + mapData.getLong("duration") + " seconds");
-        distanceText2.setText("" + mapData.getFloat("distance") + " meters");
-        speedText2.setText("" + mapData.getFloat("speed") + " meters/seconds");
+        dateText2.setText("Run Date:  " + mapData.getString("date"));
+        timeText2.setText("Duration: " + mapData.getLong("duration") + " seconds");
+        distanceText2.setText("Distance: " + mapData.getFloat("distance") + " meters");
+        speedText2.setText("Speed: " + mapData.getFloat("speed") + " meters/seconds");
 
     }
 }
