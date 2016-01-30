@@ -76,8 +76,8 @@ public class EndRideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         AlertBox("ERROR", "in onCreate");
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        reconnectBluetooth();
+        //btAdapter = BluetoothAdapter.getDefaultAdapter();
+        //reconnectBluetooth();
 
         setContentView(R.layout.activity_end_ride);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,7 +106,7 @@ public class EndRideActivity extends AppCompatActivity {
 
         AlertBox("ERROR", "in onResume");
 
-        reconnectBluetooth();
+        //reconnectBluetooth();
         setupLocationUpdates();
 
 
@@ -169,52 +169,52 @@ public class EndRideActivity extends AppCompatActivity {
         );
     }
 
-    protected void reconnectBluetooth() {
-        checkBluetoothAdapter();
+//    protected void reconnectBluetooth() {
+//        checkBluetoothAdapter();
+//
+//        btDevice = btAdapter.getRemoteDevice(btDeviceAddress);
+//        try {
+//            btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(SSP_UUID);
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to create bluetooth socket:" + e.getMessage());
+//        }
+//
+//        btAdapter.cancelDiscovery();
+//
+//        try {
+//            btSocket.connect();
+//        } catch (IOException e1) {
+//            AlertBox("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
+//            try {
+//                btSocket.close();
+//            } catch (IOException e2) {
+//                AlertBox("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
+//            }
+//        }
+//
+//        try {
+//            btOutput = btSocket.getOutputStream();
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
+//        }
+//
+//        try {
+//            btInput = btSocket.getInputStream();
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
+//        }
+//    }
 
-        btDevice = btAdapter.getRemoteDevice(btDeviceAddress);
-        try {
-            btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(SSP_UUID);
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to create bluetooth socket:" + e.getMessage());
-        }
-
-        btAdapter.cancelDiscovery();
-
-        try {
-            btSocket.connect();
-        } catch (IOException e1) {
-            AlertBox("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
-            try {
-                btSocket.close();
-            } catch (IOException e2) {
-                AlertBox("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
-            }
-        }
-
-        try {
-            btOutput = btSocket.getOutputStream();
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
-        }
-
-        try {
-            btInput = btSocket.getInputStream();
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
-        }
-    }
-
-    protected void checkBluetoothAdapter() {
-        if (btAdapter == null) {
-            AlertBox("Error", "Bluetooth is not supported on your device");
-        } else {
-            if (btAdapter.isEnabled() == false) {
-                Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
-    }
+//    protected void checkBluetoothAdapter() {
+//        if (btAdapter == null) {
+//            AlertBox("Error", "Bluetooth is not supported on your device");
+//        } else {
+//            if (btAdapter.isEnabled() == false) {
+//                Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
+//                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//            }
+//        }
+//    }
 
     protected void sendLocationOverBluetooth(LatLng location) {
         String message = Double.toString(location.latitude);

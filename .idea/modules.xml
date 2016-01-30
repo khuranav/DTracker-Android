@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HomeToMap.iml" filepath="$PROJECT_DIR$/HomeToMap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EE180D-Android.iml" filepath="$PROJECT_DIR$/EE180D-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
