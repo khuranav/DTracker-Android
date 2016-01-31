@@ -42,4 +42,27 @@ public enum BluetoothPacketType {
     {
         return this.value;
     }
+
+    String getString()
+    {
+        switch (this)
+        {
+            case UPDATE_CHECK:
+                return "UPDATE_CHECK";
+            case UPDATE_RUNS_CNT:
+                return "UPDATE_RUNS_CNT";
+            case UPDATE_RUNS_END:
+                return "UPDATE_RUNS_END";
+            case NEW_RUN_CNT:
+                return "NEW_RUN_CNT";
+            case NEW_RUN_END:
+                return "NEW_RUN_END";
+            case NO_UPDATE:
+                return "NO_UPDATE";
+            case GPS_UPDATE:
+                return "GPS_UPDATE";
+            default:
+                return "ERROR: UKNOWN TYPE";
+        }
+    }
 }

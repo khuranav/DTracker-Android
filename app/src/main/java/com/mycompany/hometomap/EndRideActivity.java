@@ -79,6 +79,8 @@ public class EndRideActivity extends AppCompatActivity {
         //btAdapter = BluetoothAdapter.getDefaultAdapter();
         //reconnectBluetooth();
 
+        Bluetooth.ReconnectBluetooth(this);
+
         setContentView(R.layout.activity_end_ride);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -107,6 +109,7 @@ public class EndRideActivity extends AppCompatActivity {
         AlertBox("ERROR", "in onResume");
 
         //reconnectBluetooth();
+        Bluetooth.ReconnectBluetooth(this);
         setupLocationUpdates();
 
 
@@ -131,7 +134,8 @@ public class EndRideActivity extends AppCompatActivity {
                 routeLocation.add(location);
 //                speedPoints.add(location.getSpeed());
                 timePoints.add(location.getElapsedRealtimeNanos());
-                sendLocationOverBluetooth(trick);
+                Bluetooth.SendLocationUpdate(location);
+                //sendLocationOverBluetooth(trick);
             }
 
             @Override
@@ -216,38 +220,38 @@ public class EndRideActivity extends AppCompatActivity {
 //        }
 //    }
 
-    protected void sendLocationOverBluetooth(LatLng location) {
-        String message = Double.toString(location.latitude);
-        message += ",";
-        message += Double.toString(location.longitude);
-        message += "\n\0";
-
-        byte[] messageBuffer = message.getBytes();
-        try {
-            btOutput.write(messageBuffer);
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
-        }
-
-    }
-
-    protected void endRideOverBluetooth() {
-        String message = "END\n\0";
-
-        if (btOutput == null)
-            AlertBox("ERROR", "btOutput is null");
-        else {
-            byte[] messageBuffer = message.getBytes();
-            try {
-                btOutput.write(messageBuffer);
-            } catch (IOException e) {
-                AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
-            }
-        }
+//    protected void sendLocationOverBluetooth(LatLng location) {
+//        String message = Double.toString(location.latitude);
+//        message += ",";
+//        message += Double.toString(location.longitude);
+//        message += "\n\0";
+//
+//        byte[] messageBuffer = message.getBytes();
+//        try {
+//            btOutput.write(messageBuffer);
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
+//        }
+//
+//    }
+//
+//    protected void endRideOverBluetooth() {
+//        String message = "END\n\0";
+//
+//        if (btOutput == null)
+//            AlertBox("ERROR", "btOutput is null");
+//        else {
+//            byte[] messageBuffer = message.getBytes();
+//            try {
+//                btOutput.write(messageBuffer);
+//            } catch (IOException e) {
+//                AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
+//            }
+//        }
 
 //        locationManager.removeUpdates(locationListener);
 //        locationManager = null;
-    }
+//  }
 
     public void AlertBox(String title, String message) {
         new AlertDialog.Builder(this)
@@ -289,6 +293,10 @@ public class EndRideActivity extends AppCompatActivity {
 //    }
 
     public void onEndClick(View view) {
+        locationManager = null;
+        locationListener = null;
+        Bluetooth.EndRide();
+
         //FAKE DATA 1
         LatLng sydney = new LatLng(34.063677, -118.445439);
         routePoints.add(sydney);
