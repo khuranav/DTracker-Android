@@ -15,6 +15,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.location.Location;
+import java.lang.Object;
+import android.net.Uri;
+import java.lang.String;
+import android.app.Service;
 
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -37,13 +41,17 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationServices;
 
 
-public class HomeActivity extends AppCompatActivity{
+public class HomeActivity extends AppCompatActivity {
 
     private static final int PLACE_PICKER_REQUEST = 1;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     private static LocationListener locationListener;
     private static LocationManager locationManager;
+    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    Place placePicked;
+    double placeLat;
+    double placeLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +71,17 @@ public class HomeActivity extends AppCompatActivity{
         });
     }
 
-    public void onStartClick (View view) {
+    public void onStartClick(View view) {
         Intent ii = new Intent(this, EndRideActivity.class);
         startActivity(ii);
     }
 
-    public void onBlueClick (View view) {
+    public void onBlueClick(View view) {
         Intent ff = new Intent(this, BlueActivity.class);
         startActivity(ff);
     }
 
-//    public void onPlaceClick (View view) {
-//        Intent gg = new Intent(this, PlacePickerActivity.class);
-//        startActivity(gg);
-//    }
-
-    public void onSearchClick (View view) {
+    public void onSearchClick(View view) {
         int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -87,15 +90,15 @@ public class HomeActivity extends AppCompatActivity{
         }
         mLastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        final EditText setRad = (EditText)findViewById(R.id.setRad);
+        final EditText setRad = (EditText) findViewById(R.id.setRad);
         int mileRad = Integer.parseInt(setRad.getText().toString());
 
-        double latRad = mileRad/68.70749821;
-        double longRad = mileRad/(69.1710411*Math.cos(mLastLocation.getLatitude()));
+        double latRad = mileRad / 68.70749821;
+        double longRad = mileRad / (69.1710411 * Math.cos(mLastLocation.getLatitude()));
         longRad = Math.abs(longRad);
 
-        LatLng southWest = new LatLng(mLastLocation.getLatitude()-latRad, mLastLocation.getLongitude()-longRad);
-        LatLng northEast = new LatLng(mLastLocation.getLatitude()+latRad, mLastLocation.getLongitude()+longRad);
+        LatLng southWest = new LatLng(mLastLocation.getLatitude() - latRad, mLastLocation.getLongitude() - longRad);
+        LatLng northEast = new LatLng(mLastLocation.getLatitude() + latRad, mLastLocation.getLongitude() + longRad);
 
         try {
             Intent intent =
@@ -111,6 +114,37 @@ public class HomeActivity extends AppCompatActivity{
             // TODO: Handle the error.
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                placePicked = PlaceAutocomplete.getPlace(this, data);
+                LatLng placePickedLatLng = placePicked.getLatLng();
+                placeLat = placePickedLatLng.latitude;
+                placeLong = placePickedLatLng.longitude;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            // The user canceled the operation.
+        }
+    }
+
+    public void onNavClick(View view) {
+        String toParse = "google.navigation:q=" + placeLat + "," + placeLong + "&mode=b";
+        Uri gmmIntentUri = Uri.parse(toParse);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+}
+
+
+
+//    public void onPlaceClick (View view) {
+//        Intent gg = new Intent(this, PlacePickerActivity.class);
+//        startActivity(gg);
+//    }
+
 
 //    public void onLastClick (View view) {
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -133,4 +167,4 @@ public class HomeActivity extends AppCompatActivity{
 //
 //    }
 
-}
+
