@@ -76,8 +76,10 @@ public class EndRideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         AlertBox("ERROR", "in onCreate");
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        reconnectBluetooth();
+        //btAdapter = BluetoothAdapter.getDefaultAdapter();
+        //reconnectBluetooth();
+
+        Bluetooth.ReconnectBluetooth(this);
 
         setContentView(R.layout.activity_end_ride);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,7 +108,8 @@ public class EndRideActivity extends AppCompatActivity {
 
         AlertBox("ERROR", "in onResume");
 
-        reconnectBluetooth();
+        //reconnectBluetooth();
+        Bluetooth.ReconnectBluetooth(this);
         setupLocationUpdates();
 
 
@@ -131,7 +134,8 @@ public class EndRideActivity extends AppCompatActivity {
                 routeLocation.add(location);
 //                speedPoints.add(location.getSpeed());
                 timePoints.add(location.getElapsedRealtimeNanos());
-                sendLocationOverBluetooth(trick);
+                Bluetooth.SendLocationUpdate(location);
+                //sendLocationOverBluetooth(trick);
             }
 
             @Override
@@ -169,85 +173,85 @@ public class EndRideActivity extends AppCompatActivity {
         );
     }
 
-    protected void reconnectBluetooth() {
-        checkBluetoothAdapter();
+//    protected void reconnectBluetooth() {
+//        checkBluetoothAdapter();
+//
+//        btDevice = btAdapter.getRemoteDevice(btDeviceAddress);
+//        try {
+//            btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(SSP_UUID);
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to create bluetooth socket:" + e.getMessage());
+//        }
+//
+//        btAdapter.cancelDiscovery();
+//
+//        try {
+//            btSocket.connect();
+//        } catch (IOException e1) {
+//            AlertBox("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
+//            try {
+//                btSocket.close();
+//            } catch (IOException e2) {
+//                AlertBox("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
+//            }
+//        }
+//
+//        try {
+//            btOutput = btSocket.getOutputStream();
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
+//        }
+//
+//        try {
+//            btInput = btSocket.getInputStream();
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
+//        }
+//    }
 
-        btDevice = btAdapter.getRemoteDevice(btDeviceAddress);
-        try {
-            btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(SSP_UUID);
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to create bluetooth socket:" + e.getMessage());
-        }
+//    protected void checkBluetoothAdapter() {
+//        if (btAdapter == null) {
+//            AlertBox("Error", "Bluetooth is not supported on your device");
+//        } else {
+//            if (btAdapter.isEnabled() == false) {
+//                Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
+//                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//            }
+//        }
+//    }
 
-        btAdapter.cancelDiscovery();
-
-        try {
-            btSocket.connect();
-        } catch (IOException e1) {
-            AlertBox("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
-            try {
-                btSocket.close();
-            } catch (IOException e2) {
-                AlertBox("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
-            }
-        }
-
-        try {
-            btOutput = btSocket.getOutputStream();
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
-        }
-
-        try {
-            btInput = btSocket.getInputStream();
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
-        }
-    }
-
-    protected void checkBluetoothAdapter() {
-        if (btAdapter == null) {
-            AlertBox("Error", "Bluetooth is not supported on your device");
-        } else {
-            if (btAdapter.isEnabled() == false) {
-                Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
-    }
-
-    protected void sendLocationOverBluetooth(LatLng location) {
-        String message = Double.toString(location.latitude);
-        message += ",";
-        message += Double.toString(location.longitude);
-        message += "\n\0";
-
-        byte[] messageBuffer = message.getBytes();
-        try {
-            btOutput.write(messageBuffer);
-        } catch (IOException e) {
-            AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
-        }
-
-    }
-
-    protected void endRideOverBluetooth() {
-        String message = "END\n\0";
-
-        if (btOutput == null)
-            AlertBox("ERROR", "btOutput is null");
-        else {
-            byte[] messageBuffer = message.getBytes();
-            try {
-                btOutput.write(messageBuffer);
-            } catch (IOException e) {
-                AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
-            }
-        }
+//    protected void sendLocationOverBluetooth(LatLng location) {
+//        String message = Double.toString(location.latitude);
+//        message += ",";
+//        message += Double.toString(location.longitude);
+//        message += "\n\0";
+//
+//        byte[] messageBuffer = message.getBytes();
+//        try {
+//            btOutput.write(messageBuffer);
+//        } catch (IOException e) {
+//            AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
+//        }
+//
+//    }
+//
+//    protected void endRideOverBluetooth() {
+//        String message = "END\n\0";
+//
+//        if (btOutput == null)
+//            AlertBox("ERROR", "btOutput is null");
+//        else {
+//            byte[] messageBuffer = message.getBytes();
+//            try {
+//                btOutput.write(messageBuffer);
+//            } catch (IOException e) {
+//                AlertBox("ERROR", "Failed to write " + message + " to output stream: " + e.getMessage());
+//            }
+//        }
 
 //        locationManager.removeUpdates(locationListener);
 //        locationManager = null;
-    }
+//  }
 
     public void AlertBox(String title, String message) {
         new AlertDialog.Builder(this)
@@ -289,6 +293,10 @@ public class EndRideActivity extends AppCompatActivity {
 //    }
 
     public void onEndClick(View view) {
+        locationManager = null;
+        locationListener = null;
+        Bluetooth.EndRide();
+
         //FAKE DATA 1
         LatLng sydney = new LatLng(34.063677, -118.445439);
         routePoints.add(sydney);

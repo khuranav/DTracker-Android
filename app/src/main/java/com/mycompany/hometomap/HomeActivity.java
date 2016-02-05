@@ -69,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        Bluetooth.ReconnectBluetooth(this);
     }
 
     public void onStartClick(View view) {
