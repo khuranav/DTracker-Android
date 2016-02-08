@@ -199,8 +199,22 @@ public class Bluetooth {
             return;
         }
 
-        if (bluetoothPacket.getPacketType() == BluetoothPacketType.UPDATE_CHECK)
-            HandleUpdateRequest(bluetoothPacket);
+        switch (bluetoothPacket.getPacketType())
+        {
+            case UPDATE_CHECK:
+                HandleUpdateRequest(bluetoothPacket);
+                break;
+            case FALL_ALERT:
+                HandleFallAlert(bluetoothPacket);
+                break;
+            default:
+                Log.d("ERROR", "Recieved packet that I can't handle: " + bluetoothPacket.getPacketType().getString());
+                AlertBox("ERROR", "Recieved packet that I can't handle: " + bluetoothPacket.getPacketType().getString());
+                break;
+
+        }
+//        if (bluetoothPacket.getPacketType() == BluetoothPacketType.UPDATE_CHECK)
+//            HandleUpdateRequest(bluetoothPacket);
 
     }
 
@@ -230,17 +244,29 @@ public class Bluetooth {
         SendPacket(bluetoothPacket);
     }
 
+    public static void HandleFallAlert(BluetoothPacket bluetoothPacket)
+    {
+        if (bluetoothPacket.getPacketType() != BluetoothPacketType.FALL_ALERT)
+            Log.d("ERROR", "HandleFallAlert method expects a bluetooth packet of type FALL_ALERT, recieved " + bluetoothPacket.getPacketType().getString());
+        Log.d("INFO", "Potential fall detected!");
+        AlertBox("WARNING", "Potential Fall Detected!");
+    }
 
+    private static void AlertBox(final String title, final String message) {
+        _currentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(_currentActivity)
+                        .setTitle(title)
+                        .setMessage(message + " Press OK to exit.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                //finish();
+                                arg0.cancel();
+                            }
+                        }).show();
+            }
+        });
 
-//    public void AlertBox(String title, String message) {
-//        new AlertDialog.Builder(this)
-//                .setTitle(title)
-//                .setMessage(message + " Press OK to exit.")
-//                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface arg0, int arg1) {
-//                        //finish();
-//                        arg0.cancel();
-//                    }
-//                }).show();
-//    }
+    }
 }

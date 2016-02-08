@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -42,6 +43,8 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.jar.Manifest;
 import java.util.jar.Pack200;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class EndRideActivity extends AppCompatActivity {
 
@@ -70,6 +73,12 @@ public class EndRideActivity extends AppCompatActivity {
     private static LocationListener locationListener;
     private static LocationManager locationManager;
 
+
+    /* Private handler to recieve messages from non-ui threads */
+//    private Handler EndRideActivityHandler = new Handler(Looper.getMainLooper())
+//    {
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

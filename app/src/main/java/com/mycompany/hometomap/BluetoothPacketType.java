@@ -12,7 +12,8 @@ public enum BluetoothPacketType {
     NEW_RUN_CNT     (3),
     NEW_RUN_END     (4),
     NO_UPDATE       (5),
-    GPS_UPDATE      (6);
+    GPS_UPDATE      (6),
+    FALL_ALERT      (7);
 
     private final int value;
 
@@ -26,6 +27,7 @@ public enum BluetoothPacketType {
         map.put(4, NEW_RUN_END);
         map.put(5, NO_UPDATE);
         map.put(6, GPS_UPDATE);
+        map.put(7, FALL_ALERT);
     }
 
     public static BluetoothPacketType fromInt(int i)
@@ -61,6 +63,8 @@ public enum BluetoothPacketType {
                 return "NO_UPDATE";
             case GPS_UPDATE:
                 return "GPS_UPDATE";
+            case FALL_ALERT:
+                return "FALL_ALERT";
             default:
                 return "ERROR: UKNOWN TYPE";
         }
