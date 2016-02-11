@@ -72,6 +72,11 @@ public class EndRideActivity extends AppCompatActivity {
 
     private static LocationListener locationListener;
     private static LocationManager locationManager;
+//    /**
+//     * ATTENTION: This was auto-generated to implement the App Indexing API.
+//     * See https://g.co/AppIndexing/AndroidStudio for more information.
+//     */
+//    private GoogleApiClient client2;
 
 
     /* Private handler to recieve messages from non-ui threads */
@@ -84,7 +89,7 @@ public class EndRideActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AlertBox("ERROR", "in onCreate");
+        //AlertBox("ERROR", "in onCreate");
         //btAdapter = BluetoothAdapter.getDefaultAdapter();
         //reconnectBluetooth();
 
@@ -110,6 +115,9 @@ public class EndRideActivity extends AppCompatActivity {
 
         setupLocationUpdates();
 
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        client2 = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     protected void onResume(Bundle savedInstanceState) {
@@ -302,41 +310,47 @@ public class EndRideActivity extends AppCompatActivity {
 //    }
 
     public void onEndClick(View view) {
-        locationManager = null;
-        locationListener = null;
+        if (locationManager != null)
+        {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            {
+                locationManager.removeUpdates(locationListener);
+            }
+        }
+
         Bluetooth.EndRide();
 
         //FAKE DATA 1
-        LatLng sydney = new LatLng(34.063677, -118.445439);
-        routePoints.add(sydney);
-        Location syd = new Location("dummyProvider");
-        syd.setLatitude(34.063677);
-        syd.setLongitude(-118.445439);
-        routeLocation.add(syd);
-
-        //FAKE DATA 2
-        LatLng sydney2 = new LatLng(34.063647, -118.448181);
-        routePoints.add(sydney2);
-        Location syd2 = new Location("dummyProvider");
-        syd2.setLatitude(34.063647);
-        syd2.setLongitude(-118.448181);
-        routeLocation.add(syd2);
-
-        //FAKE DATA 3
-        LatLng sydney3 = new LatLng(34.064865, -118.44801);
-        routePoints.add(sydney3);
-        Location syd3 = new Location("dummyProvider");
-        syd3.setLatitude(34.064865);
-        syd3.setLongitude(-118.44801);
-        routeLocation.add(syd3);
-
-        //FAKE DATA 4
-        LatLng sydney4 = new LatLng(34.065942, -118.447595);
-        routePoints.add(sydney4);
-        Location syd4 = new Location("dummyProvider");
-        syd4.setLatitude(34.065942);
-        syd4.setLongitude(-118.447595);
-        routeLocation.add(syd4);
+//        LatLng sydney = new LatLng(34.063677, -118.445439);
+//        routePoints.add(sydney);
+//        Location syd = new Location("dummyProvider");
+//        syd.setLatitude(34.063677);
+//        syd.setLongitude(-118.445439);
+//        routeLocation.add(syd);
+//
+//        //FAKE DATA 2
+//        LatLng sydney2 = new LatLng(34.063647, -118.448181);
+//        routePoints.add(sydney2);
+//        Location syd2 = new Location("dummyProvider");
+//        syd2.setLatitude(34.063647);
+//        syd2.setLongitude(-118.448181);
+//        routeLocation.add(syd2);
+//
+//        //FAKE DATA 3
+//        LatLng sydney3 = new LatLng(34.064865, -118.44801);
+//        routePoints.add(sydney3);
+//        Location syd3 = new Location("dummyProvider");
+//        syd3.setLatitude(34.064865);
+//        syd3.setLongitude(-118.44801);
+//        routeLocation.add(syd3);
+//
+//        //FAKE DATA 4
+//        LatLng sydney4 = new LatLng(34.065942, -118.447595);
+//        routePoints.add(sydney4);
+//        Location syd4 = new Location("dummyProvider");
+//        syd4.setLatitude(34.065942);
+//        syd4.setLongitude(-118.447595);
+//        routeLocation.add(syd4);
 
         Intent i = new Intent(this, MapsActivity.class);
         i.putParcelableArrayListExtra("point", routePoints);
@@ -350,10 +364,10 @@ public class EndRideActivity extends AppCompatActivity {
                 totalDistance = totalDistance + result[0];
             }
 
-//            duration = timePoints.get(timePoints.size()-1) - timePoints.get(0);
-//            duration = duration/1000000000;
+            duration = timePoints.get(timePoints.size()-1) - timePoints.get(0);
+            duration = duration/1000000000;
 
-            duration = 5;
+//            duration = 5;
 
             avSpeed = totalDistance / duration;
 
@@ -389,6 +403,46 @@ public class EndRideActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        client2.connect();
+//        Action viewAction = Action.newAction(
+//                Action.TYPE_VIEW, // TODO: choose an action type.
+//                "EndRide Page", // TODO: Define a title for the content shown.
+//                // TODO: If you have web page content that matches this app activity's content,
+//                // make sure this auto-generated web page URL is correct.
+//                // Otherwise, set the URL to null.
+//                Uri.parse("http://host/path"),
+//                // TODO: Make sure this auto-generated app deep link URI is correct.
+//                Uri.parse("android-app://com.mycompany.hometomap/http/host/path")
+//        );
+//        AppIndex.AppIndexApi.start(client2, viewAction);
+//    }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        Action viewAction = Action.newAction(
+//                Action.TYPE_VIEW, // TODO: choose an action type.
+//                "EndRide Page", // TODO: Define a title for the content shown.
+//                // TODO: If you have web page content that matches this app activity's content,
+//                // make sure this auto-generated web page URL is correct.
+//                // Otherwise, set the URL to null.
+//                Uri.parse("http://host/path"),
+//                // TODO: Make sure this auto-generated app deep link URI is correct.
+//                Uri.parse("android-app://com.mycompany.hometomap/http/host/path")
+//        );
+//        AppIndex.AppIndexApi.end(client2, viewAction);
+//        client2.disconnect();
+//    }
 }
 
 //
