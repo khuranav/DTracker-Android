@@ -69,7 +69,7 @@ public class EndRideActivity extends AppCompatActivity {
     private static final UUID SSP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final String btDeviceAddress = "98:4F:EE:04:A1:E1";
     private final static int REQUEST_ENABLE_BT = 1;
-
+    private String format;
     private static LocationListener locationListener;
     private static LocationManager locationManager;
 //    /**
@@ -110,7 +110,7 @@ public class EndRideActivity extends AppCompatActivity {
 
         final TextView dateText = (TextView) findViewById(R.id.dateText);
         SimpleDateFormat s = new SimpleDateFormat("MM/dd/yy hh:mm");
-        String format = s.format(new Date());
+        format = s.format(new Date());
         dateText.setText(format);
 
         setupLocationUpdates();
@@ -367,14 +367,13 @@ public class EndRideActivity extends AppCompatActivity {
             duration = timePoints.get(timePoints.size()-1) - timePoints.get(0);
             duration = duration/1000000000;
 
-//            duration = 5;
 
             avSpeed = totalDistance / duration;
 
         }
 
 
-//        i.putExtra("date", dateformatStr);
+        i.putExtra("date", format);
         i.putExtra("duration", duration);
         i.putExtra("distance", totalDistance);
         i.putExtra("speed", avSpeed);
