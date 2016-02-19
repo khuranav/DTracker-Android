@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -61,8 +62,19 @@ public class DestinationActivity extends AppCompatActivity {
 
             return;
         }
-        mLastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
+        /*
+           locationManager.getLastKnownLocation will return null if phone was activated within a few minutes *./
+           Default to UCLA GPS coordinates if this occurs
+         */
+        mLastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (mLastLocation == null)
+        {
+            Log.d("ERROR", "Unkown location, defaulting to UCLA");
+            mLastLocation = new Location("default_gps_location");
+            mLastLocation.setLatitude(34.0689254);
+            mLastLocation.setLongitude(-118.4473751);
+        }
         final EditText setRad = (EditText) findViewById(R.id.setRad);
         int mileRad = Integer.parseInt(setRad.getText().toString());
 

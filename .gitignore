@@ -5,3 +5,5 @@
 .DS_Store
 /build
 /captures
+./app/src/debug/google_maps_api.xml
+./app/src/main/AndroidManifest.xml
