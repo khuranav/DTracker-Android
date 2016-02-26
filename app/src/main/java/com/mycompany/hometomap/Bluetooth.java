@@ -5,12 +5,17 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.renderscript.ScriptGroup;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.Console;
 import java.io.IOException;
@@ -34,8 +39,8 @@ public class Bluetooth {
     private static final int REQUEST_ENABLE_BT = 1;
     private static Activity _currentActivity;
 
-
-
+    private static long lastFallAlertTime = 0;
+    private static final long FALL_ALERT_TIMEOUT = 30L * 1000L * 1000L * 1000L; // 30 oseconds
     private static BluetoothThread bluetoothThread;
 
 //    public static void Connect(Intent intent)
@@ -96,55 +101,6 @@ public class Bluetooth {
         bluetoothThread.start();
 
         Log.d("INFO", "Ending bluetooth.reconnect\n");
-//        Log.d("INFO", "Getting Bluetooth device...");
-//        btDevice = btAdapter.getRemoteDevice(btDeviceAddress);
-//
-//        Log.d("INFO", "Trying to create Bluetooth socket...\n");
-//        try {
-//            btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(SSP_UUID);
-//        } catch (IOException e) {
-//            Log.d("ERROR", "Failed to create bluetooth socket:" + e.getMessage());
-//        }
-//        Log.d("INFO", "Created Bluetooth socket...\n");
-//
-//        btAdapter.cancelDiscovery();
-        //BluetoothConnectAsync connectAsync = new BluetoothConnectAsync(btSocket, btOutput, btInput);
-
-//        Log.d("INFO", "Trying to connect via Bluetooth...");
-//        try {
-//            btSocket.connect();
-//        } catch (IOException e1) {
-//            Log.d("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
-//            try {
-//                btSocket.close();
-//            } catch (IOException e2) {
-//                Log.d("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
-//            }
-//        }
-//        Log.d("INFP", "Connected via Bluetooth");
-
-//        Log.d("INFO", "Trying to get output stream...");
-//        try {
-//            btOutput = btSocket.getOutputStream();
-//        } catch (IOException e) {
-//            Log.d("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
-//        }
-//        Log.d("INFO", "Got output stream");
-//
-//        Log.d("INFO", "Trying to get input stream...");
-//        try {
-//            btInput = btSocket.getInputStream();
-//        } catch (IOException e) {
-//            Log.d("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
-//        }
-//        Log.d("INFO", "Got input stream");
-//
-//        bluetoothThread = new BluetoothThread(btOutput, btInput);
-//        bluetoothThread.start();
-
-//
-//        if (DataIsAvailable())
-//            RecievePacket();
     }
 
     public static void SendLocationUpdate(Location location)
@@ -160,41 +116,6 @@ public class Bluetooth {
         }
     }
 
-//    private static void SendOverBluetooth(byte[] data, int dataSize) {
-//        try {
-//            btOutput.write(data, 0, dataSize);
-//        } catch (IOException e) {
-//            Log.d("ERROR", "Failed to write data to Bluetooth Output Stream: " + e.getMessage());
-//        }
-//    }
-//
-//    private static void GetFromBluetooth(byte[] data) {
-//        Log.d("INFO", "Trying to read from bluetooth...");
-//        try {
-//            btInput.read(data);
-//        } catch (IOException e)
-//        {
-//            Log.d("ERROR", "Failed to read data from Bluetooth Input Stream: " + e.getMessage());
-//        }
-//    }
-
-//    public static boolean DataIsAvailable() {
-//        if ( bluetoothThread == null || bluetoothThread.isSocketConnected() == false )
-//        {
-//            Log.d("ERROR", "Tried to check for available data on disconnected socket\n");
-//            return false;
-//        }
-//        try {
-//            if ()
-//                return true;
-//            else
-//                return false;
-//        } catch (IOException e)
-//        {
-//            Log.d("ERROR", "Failed to check for data: " + e.getMessage());
-//            return false;
-//        }
-//    }
 
     public static void SendPacket(BluetoothPacket packet)
     {
@@ -232,9 +153,6 @@ public class Bluetooth {
                 break;
 
         }
-//        if (bluetoothPacket.getPacketType() == BluetoothPacketType.UPDATE_CHECK)
-//            HandleUpdateRequest(bluetoothPacket);
-
     }
 
     private static void HandleUpdateRequest(BluetoothPacket bluetoothPacket)
@@ -263,12 +181,47 @@ public class Bluetooth {
         SendPacket(bluetoothPacket);
     }
 
-    public static void HandleFallAlert(BluetoothPacket bluetoothPacket)
+    private static void HandleFallAlert(BluetoothPacket bluetoothPacket)
     {
         if (bluetoothPacket.getPacketType() != BluetoothPacketType.FALL_ALERT)
             Log.d("ERROR", "HandleFallAlert method expects a bluetooth packet of type FALL_ALERT, recieved " + bluetoothPacket.getPacketType().getString());
-        Log.d("INFO", "Potential fall detected!");
-        AlertBox("WARNING", "Potential Fall Detected!");
+        long time = System.nanoTime();
+        long elapsedTime = time - lastFallAlertTime;
+        if (elapsedTime > FALL_ALERT_TIMEOUT) {
+            Log.d("INFO", "Potential fall detected!");
+            sendTextAlert();
+            AlertBox("WARNING", "Potential Fall Detected!");
+            lastFallAlertTime = time;
+        } else
+        {
+            Log.d("INFO", "Detected potential fall within 30 seconds of last alert. " + String.valueOf(FALL_ALERT_TIMEOUT - elapsedTime) + " nanoseconds remaining.");
+        }
+    }
+
+    private static void sendTextAlert()
+    {
+        String emergencyContactNumber = SettingsActivity.getEmergencyNumber();
+        String username = SettingsActivity.getUserName();
+        Log.d("INFO", "Emergency number: " + emergencyContactNumber);
+        Log.d("INFO", "Username: " + username);
+        if ( ! PhoneNumberUtils.isGlobalPhoneNumber(emergencyContactNumber) )
+        {
+            Log.d("INFO", "Can't send alert text as there is no valid emergency number");
+        }
+        else
+        {
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(emergencyContactNumber, null, username + " has fallen during a bike ride", null, null);
+            } catch (Exception e)
+            {
+                Log.d("ERROR", "Failed to send sms alert: " + e.getMessage());
+            }
+//            Intent textIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + emergencyContactNumber));
+//            textIntent.putExtra("sms_body", username + " has fallen during a bike ride");
+//            _currentActivity.startActivity(textIntent);
+        }
+
     }
 
     private static void AlertBox(final String title, final String message) {
@@ -289,60 +242,4 @@ public class Bluetooth {
 
     }
 
-//    private class BluetoothConnectAsync extends AsyncTask
-//    {
-//        private BluetoothSocket _bluetoothSocket;
-//        private OutputStream _bluetoothOutputStream;
-//        private InputStream _blutoothInputStream;
-//
-//        BluetoothConnectAsync(BluetoothSocket bluetoothSocket, OutputStream bluetoothOutputStream, InputStream bluetoothInputStream)
-//        {
-//            _bluetoothSocket = bluetoothSocket;
-//            _bluetoothOutputStream = bluetoothOutputStream;
-//            _blutoothInputStream = bluetoothInputStream;
-//        }
-//
-//        @Override
-//        protected Object doInBackground(Object[] params) {
-//            while ( ! _bluetoothSocket.isConnected() )
-//            {
-//                Log.d("INFO", "Trying to connect via Bluetooth...");
-//                try {
-//                    btSocket.connect();
-//                } catch (IOException e1) {
-//                    Log.d("ERROR", "Failed to connect to device " + btDeviceAddress + " because: " + e1.getMessage());
-//                    try {
-//                        btSocket.close();
-//                    } catch (IOException e2) {
-//                        Log.d("ERROR", "Failed to close socket after failing to connect to device: " + e1.getMessage());
-//                    }
-//                }
-//                Log.d("INFP", "Connected via Bluetooth");
-//            }
-//
-//            Log.d("INFO", "Trying to get output stream...");
-//            try {
-//                btOutput = btSocket.getOutputStream();
-//            } catch (IOException e) {
-//                Log.d("ERROR", "Failed to get output stream from bluetooth: " + e.getMessage());
-//            }
-//            Log.d("INFO", "Got output stream");
-//
-//            Log.d("INFO", "Trying to get input stream...");
-//            try {
-//                btInput = btSocket.getInputStream();
-//            } catch (IOException e) {
-//                Log.d("ERROR", "Failed to get inpput stream from bluetooth: " + e.getMessage());
-//            }
-//            Log.d("INFO", "Got input stream");
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Object o) {
-//            BluetoothThread thread = new BluetoothThread(_bluetoothOutputStream, _blutoothInputStream);
-//            thread.run();
-//        }
-//    }
 }

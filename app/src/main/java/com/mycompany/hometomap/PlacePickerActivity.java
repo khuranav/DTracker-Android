@@ -45,6 +45,13 @@ public class PlacePickerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Bluetooth.ReconnectBluetooth(this);
+    }
+
 
 //    @Override
 //    protected void onActivityResult(int requestCode,
