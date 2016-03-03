@@ -7,4 +7,5 @@
     <string name="title_activity_blue">BlueActivity</string>
     <string name="title_activity_place_picker">PlacePickerActivity</string>
     <string name="title_activity_destination">DestinationActivity</string>
+    <string name="facebook_app_id">1032166486857304</string>
 </resources>

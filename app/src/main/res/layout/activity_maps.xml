@@ -32,8 +32,8 @@
             android:text="Large Text"
             android:id="@+id/showDate2"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="30dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="#FA8072"/>
 
 
@@ -44,8 +44,8 @@
             android:text="Large Text"
             android:id="@+id/showTime2"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="#66CDAA"/>
 
         <TextView
@@ -55,8 +55,8 @@
             android:text="Large Text"
             android:id="@+id/showDistance2"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="#66CDAA"/>
 
         <TextView
@@ -66,9 +66,18 @@
             android:text="Large Text"
             android:id="@+id/showSpeed2"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:background="#66CDAA"/>
+
+        <com.facebook.share.widget.ShareButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shareButton"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            />
 
     </LinearLayout>
 
