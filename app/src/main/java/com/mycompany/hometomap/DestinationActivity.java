@@ -127,7 +127,7 @@ public class DestinationActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        Bluetooth.ReconnectBluetooth(this);
+
     }
 
 }

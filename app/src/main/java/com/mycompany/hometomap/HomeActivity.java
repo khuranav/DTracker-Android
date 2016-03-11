@@ -91,8 +91,8 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(ii);
     }
 
-    public void onBlueClick(View view) {
-        Intent ff = new Intent(this, BlueActivity.class);
+    public void onMusicClick(View view) {
+        Intent ff = new Intent(this, MusicActivity.class);
         startActivity(ff);
     }
 
@@ -101,6 +101,7 @@ public class HomeActivity extends AppCompatActivity {
         Intent gg = new Intent(this, DestinationActivity.class);
         startActivity(gg);
     }
+
 
 }
 

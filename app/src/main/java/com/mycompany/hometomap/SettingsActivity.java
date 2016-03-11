@@ -26,6 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText userNameText;
     private EditText emergencyNumberText;
 
+
     public static String getUserName()
     {
         return (userName == null ? "" : userName);
